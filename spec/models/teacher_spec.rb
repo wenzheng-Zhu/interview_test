@@ -30,15 +30,7 @@ RSpec.describe Teacher, type: :model do
           expect(teacher2).not_to be_valid
           expect(teacher2.errors[:phone_no]).to include("has already been taken")
         end
-
       end
-
-
-
-
     end
-
-
-
   end
 end

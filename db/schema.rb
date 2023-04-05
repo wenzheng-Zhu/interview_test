@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_03_084551) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_03_111649) do
+  create_table "follows", force: :cascade do |t|
+    t.integer "teacher_id", null: false
+    t.integer "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_id"], name: "index_follows_on_student_id"
+    t.index ["teacher_id"], name: "index_follows_on_teacher_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "studying_id"
@@ -26,4 +35,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_084551) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "follows", "students"
+  add_foreign_key "follows", "teachers"
 end

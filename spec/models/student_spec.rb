@@ -5,9 +5,11 @@ RSpec.describe Student, type: :model do
     let(:student) { build(:student) }
     context 'name validation' do
       it 'should be not valid when name value is empty' do
-        student.name = ''
-        expect(student).not_to be_valid
-        expect(student.errors[:name]).to include("can't be blank")
+        aggregate_failures 'not valid' do
+          student.name = ''
+          expect(student).not_to be_valid
+          expect(student.errors[:name]).to include("can't be blank")
+        end
       end
     end
 
@@ -40,7 +42,5 @@ RSpec.describe Student, type: :model do
         end
       end
     end
-
-
   end
 end
