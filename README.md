@@ -42,6 +42,9 @@ Things you may want to cover:
    eg: http://localhost:3000/api/v1/teachers/specific_teacher_students?teacher_id=1
    
 * How to run the test suite
+  go to the project directory and run 'rspec' to run the test suite
+  
+* About the branches:
   I commit four branches, they are 'teacher_and_student_model_creating', 'teacher_follow_student_feature', 'teacher_unfollow_student_featureeach' and 'list_specific_teacher_followed_students_feature', each branch solve one api.
   
 
