@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Follows', type: :request do
-  describe 'Post /create' do
+  describe 'Post /create follow' do
     context 'with valid parameters' do
       let(:teacher){ create(:teacher) }
       let(:student){ create(:student) }
@@ -71,7 +71,55 @@ RSpec.describe 'Follows', type: :request do
       end
 
     end
+  end
 
+  describe 'Delete /destroy unfollow' do
+    let(:teacher){ create(:teacher) }
+    let(:student){ create(:student) }
+    before do
+      post '/api/v1/follows', params: {
+        student_id: student.id,
+        teacher_id: teacher.id
+      }
+    end
+    context 'with valid parameters' do
+      it 'should delete the related follow and unfollow successfully' do
+        follow_before = Follow.find_by(teacher_id: teacher.id, student_id: student.id)
+        delete '/api/v1/unfollow', params: {
+          student_id: student.id,
+          teacher_id: teacher.id
+        }
+        follow_after = Follow.find_by(teacher_id: teacher.id, student_id: student.id)
+        aggregate_failures do
+          expect(follow_before.nil?).to eq(false)
+          expect(follow_after.nil?).to eq(true)
+        end
+      end
 
+      it "should return 'This teacher did not follow this student!' when the follow does not exist" do
+        Follow.find_by(teacher_id: teacher.id, student_id: student.id).destroy
+        delete '/api/v1/unfollow', params: {
+          student_id: student.id,
+          teacher_id: teacher.id
+        }
+        expect(json["message"]).to eq('This teacher did not follow this student!')
+      end
+
+      it "should return 'Check the params, the params should not be empty!' when teacher_id or student_id is nil" do
+        delete '/api/v1/unfollow', params: {
+          student_id: nil,
+          teacher_id: teacher.id
+        }
+        expect(json["message"]).to eq('Check the params, the params should not be empty!')
+      end
+
+      it "should return 'Check the params, the teacher or the student does not exist!' when teacher or student does not exist" do
+        delete '/api/v1/unfollow', params: {
+          student_id: 99999,
+          teacher_id: teacher.id
+        }
+        expect(json["message"]).to eq('Check the params, the teacher or the student does not exist!')
+      end
+    end
   end
 end

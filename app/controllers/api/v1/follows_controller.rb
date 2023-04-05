@@ -14,6 +14,31 @@ class Api::V1::FollowsController < ApplicationController
       response_hash[:message] = 'The teacher has followed this student before!'
       render json: response_hash.to_json, status: :ok
     end
+  end
+
+  def unfollow
+    unless params[:teacher_id] && params[:student_id]
+      render json: {
+        message: 'Check the params, the params should not be empty!'
+      }
+    else
+      begin
+        teacher = Teacher.find_by( id: params[:teacher_id])
+        student = Student.find_by( id: params[:student_id])
+        unless teacher && student
+          render json: { message: 'Check the params, the teacher or the student does not exist!' }
+        else
+          follow = Follow.find_by!(teacher_id: params[:teacher_id], student_id: params[:student_id])
+          if follow.destroy
+            render json: { message: 'Unfollowed Successfully!' }, status: :ok
+          end
+        end
+      rescue
+        render json: {
+          message: 'This teacher did not follow this student!'
+        }
+      end
+    end
 
   end
 
